@@ -1,13 +1,20 @@
 {
   "name": "agentic-doc",
   "version": "0.1.0",
-  "description": "Fill one HTML template with slots and write HTML or PDF.",
+  "description": "Render HTML templates to local HTML or Cloudflare Browser Rendering PDFs with a CLI, MCP server, and agent library.",
   "keywords": [
+    "cloudflare",
+    "browser-rendering",
+    "html",
+    "pdf",
+    "document-rendering",
+    "html-template",
+    "template-slots",
+    "typescript",
+    "nodejs",
     "cli",
     "mcp",
-    "document",
-    "html",
-    "pdf"
+    "model-context-protocol"
   ],
   "license": "MIT",
   "author": "Pooria Arab",
