@@ -1,6 +1,6 @@
 {
   "name": "agentic-doc",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Render HTML templates to local HTML or Cloudflare Browser Rendering PDFs with a CLI, MCP server, and agent library.",
   "keywords": [
     "cloudflare",
