@@ -1,8 +1,10 @@
 # agentic-doc
 
-agentic-doc turns an HTML template into HTML or PDF files. It renders HTML
-locally by default. Cloudflare Browser Rendering creates PDFs only with
-`--live`.
+[![npm version](https://img.shields.io/npm/v/agentic-doc)](https://www.npmjs.com/package/agentic-doc)
+[![npm downloads](https://img.shields.io/npm/dm/agentic-doc)](https://www.npmjs.com/package/agentic-doc)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/license/mit)
+
+agentic-doc is an open-source HTML template renderer for Node.js developers and agents that writes local HTML or Cloudflare Browser Rendering PDFs.
 
 ## Install
 
@@ -10,43 +12,69 @@ locally by default. Cloudflare Browser Rendering creates PDFs only with
 npm install agentic-doc
 ```
 
-## Quick start
+Requires Node.js 18 or later. Includes TypeScript declarations and two runtime dependencies.
+
+## Render your first document
 
 ```sh
-cat > letter.html <<'HTML'
+cat > template.html <<'HTML'
 <h1>Hello {{name}}</h1>
 HTML
 printf '{"name":"Ada"}' > slots.json
-npx agentic-doc render --template letter.html --slots slots.json --output letter.html
+npx agentic-doc render --template template.html --slots slots.json --output result.html
+npx agentic-doc render --template template.html --slots slots.json --output result.html --live
+cat result.html
 ```
 
-This is a dry run. It exits 0. It prints the filled HTML. It writes nothing.
+The first command previews JSON with `dryRun: true` and writes nothing.
+The second writes local HTML. The final command prints `<h1>Hello Ada</h1>`.
 
-## Vendors
+## Features and coverage
 
-| Brand | Environment key | Live command |
+- **Template slots:** Replace `{{name}}` placeholders with string values; missing slots raise errors.
+- **Preview:** Inspect filled HTML before file writes or vendor calls.
+- **HTML output:** Write a local file without credentials.
+- **PDF output:** Send filled HTML to Cloudflare Browser Rendering.
+
+| Output | Provider | Status |
 | --- | --- | --- |
-| Cloudflare Browser Rendering | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` | `npx agentic-doc render --template letter.html --slots slots.json --output letter.pdf --format pdf --live` |
+| HTML | Local filesystem | Implemented; local tests |
+| PDF | Cloudflare Browser Rendering | Implemented; mocked HTTP test; live credentials unverified |
 
-The live PDF command calls Cloudflare Browser Rendering. Local HTML output
-uses `--live` but does not call a vendor.
+For PDFs, export `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+The package does not load `.env` files; load them before running the command.
 
-## Three uses
+```sh
+npx agentic-doc render --template template.html --slots slots.json --output result.pdf --format pdf --live
+```
 
-**CLI.** The default command is a dry run. Add `--live` to write HTML. Add
-`--format pdf --live` to call Cloudflare Browser Rendering.
+Success returns JSON with `vendor: "cloudflare"` and writes `result.pdf`.
 
-**Library.**
+## Library and agent tools
 
-```ts
+```js
 import { renderDocument } from "agentic-doc";
 
-await renderDocument({
-  template: "letter.html",
+const result = await renderDocument({
+  template: "template.html",
   slots: { name: "Ada" },
-  output: "letter.html",
+  output: "result.html",
 });
+console.log(result.html); // <h1>Hello Ada</h1>
 ```
 
-**MCP.** Run `npx agentic-doc mcp`. Call `render_document` with the same
-request shape. `dryRun` defaults to `true`.
+Set `dryRun: false` to write files. PDF requests also require `live: true`.
+The CLI supports `render`, `--help`, and `--version`.
+Run `npx --package agentic-doc agentic-doc-mcp` for the Model Context Protocol (MCP) stdio server.
+Its single tool is `render_document`, with the same request fields and dry-run default.
+
+## Limits and status
+
+Slot values are inserted verbatim; escape untrusted HTML yourself.
+The PDF request has no built-in retry or explicit timeout.
+The Worker source contains text-summary scaffolding, not a document-rendering service.
+Version 0.1.1 has an API that may change. No managed rendering service is included.
+
+## Links and license
+
+[Package and releases](https://www.npmjs.com/package/agentic-doc) · [MIT license](https://opensource.org/license/mit)
