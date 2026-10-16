@@ -8,13 +8,9 @@
     "html",
     "pdf",
     "document-rendering",
-    "html-template",
-    "template-slots",
-    "typescript",
-    "nodejs",
     "cli",
     "mcp",
-    "model-context-protocol"
+    "agent"
   ],
   "license": "MIT",
   "author": "Pooria Arab",
